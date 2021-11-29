@@ -19,7 +19,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="20">
-            <TextBlock Text="Email" FontSize="20" VerticalAlignment="Center" Margin="0,0,20,0" Width="100"/>
+            <!--Все свойства лучше переносить на новую строчку-->
+            <TextBlock Text="Email" FontSize="20" VerticalAlignment="Center" Margin="0,0,20,0" Width="100"/> 
             <TextBox x:Name="TextBoxEmail" Width="350"/>
         </StackPanel>
 
