@@ -31,16 +31,25 @@ namespace WorkerToExel
             InitializeComponent();
         }
 
+        // Вообще нигде не увидела обработку исключений. Работа с файлами всегда должна быть потокобезопасной
         private void Save(object sender, RoutedEventArgs e)
         {
-            var excelApp = new Excel.Application();
+            var excelApp = new Excel.Application(); // Вместо var лучше явный тип использовать, если только не абстрактный тип возвращает
             excelApp.Visible = true;
             excelApp.Workbooks.Add();
             Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
 
+            // Единичка - плохой вариант для указания позиции,
+            // вот дальше используется row, а что тут то обделил первую позицию?)
+            // Я бы советовала еще это заполнение перенести в отдельный метод, где заполняются только названия колонок
+            // тут он как мусор
+            // При чем даже в два метода, один из них будет самостоятельно добавлять данные в ячейку:
+            // private void SetDataOnCell(row, column, data) => workSheet.Cells[row, column] = data;
+            // А уже потом второй метод, где ты с использованием SetDataOnCell будешь добавлять уже все заголовки
+            // Таким образом будет визуально облегчен код
             workSheet.Cells[1, "A"] = "id";
             workSheet.Cells[1, "B"] = "email";
-            workSheet.Cells[1, "C"] = "lname";
+            workSheet.Cells[1, "C"] = "lname"; // Это в предметной области такие сокращения?
             workSheet.Cells[1, "D"] = "fname";
             workSheet.Cells[1, "E"] = "mname";
             workSheet.Cells[1, "F"] = "gender";
@@ -52,16 +61,18 @@ namespace WorkerToExel
             workSheet.Cells[1, "L"] = "password";
             workSheet.Cells[1, "M"] = "my_field";
 
+            // Это тоже в отдельный метод можно впихнуть
             var row = 1;
             foreach (var worker in workers)
             {
                 row++;
-                workSheet.Cells[row, "B"] = Encoding.UTF8.GetString(worker.email);
+                workSheet.Cells[row, "B"] = Encoding.UTF8.GetString(worker.email); // Тоже использовать SetDataOnCell(Название можно получше придумать, предлоги в наименовании не очень)
                 workSheet.Cells[row, "C"] = Encoding.UTF8.GetString(worker.lname);
                 workSheet.Cells[row, "D"] = Encoding.UTF8.GetString(worker.fname);
                 workSheet.Cells[row, "L"] = Encoding.UTF8.GetString(worker.password);
             }
 
+            // Это тоже в отдельный метод
             for (int i = 1; i <= 13; i++)
             {
                 workSheet.Columns[i].AutoFit();
@@ -86,8 +97,10 @@ namespace WorkerToExel
             return null;
         }
 
+        // Не хватает summary для всех методов, свойств, классов и тд
         private void Add(object sender, RoutedEventArgs e)
         {
+            // Такое большое условие лучше тоже вынести отдельным методом или свойством
             if (TextBoxLname.Text != "" && TextBoxFname.Text != ""
                                         && TextBoxEmail.Text != "" && TextBoxPassword.Text != "")
             {
@@ -98,13 +111,15 @@ namespace WorkerToExel
                     fname = Encoding.UTF8.GetBytes(TextBoxFname.Text),
                     password = Encoding.UTF8.GetBytes(TextBoxPassword.Text),
                 });
+                // Мусор ниже вынеси отдельным методом. В будущем возможно будешь менять клининг, а использовать его в нескольких местах.
+                // лучше в одном месте исправить, чем в нескольких
                 TextBoxLname.Text = "";
                 TextBoxFname.Text = "";
                 TextBoxEmail.Text = "";
                 TextBoxPassword.Text = "";
             }
             else
-            {
+            {// Тут скобки можно убрать - экономия двух строк
                 MessageBox.Show("Все поля должны быть заполнены.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
