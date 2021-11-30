@@ -8,9 +8,9 @@ namespace WorkerToExel
 {
     public class Worker
     {
-        public byte[] email { get; set; }
-        public byte[] lname { get; set; }
-        public byte[] fname { get; set; }
-        public byte[] password { get; set; }
+        public string email { get; set; }
+        public string lname { get; set; }
+        public string fname { get; set; }
+        public string password { get; set; }
     }
 }

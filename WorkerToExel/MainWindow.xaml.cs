@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,10 +26,12 @@ namespace WorkerToExel
     public partial class MainWindow : Window
     {
         private List<Worker> workers = new List<Worker>();
+        public Worker SelectWorker = new Worker();
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = SelectWorker;
         }
 
         private void Save(object sender, RoutedEventArgs e)
@@ -56,10 +59,10 @@ namespace WorkerToExel
             foreach (var worker in workers)
             {
                 row++;
-                workSheet.Cells[row, "B"] = Encoding.UTF8.GetString(worker.email);
-                workSheet.Cells[row, "C"] = Encoding.UTF8.GetString(worker.lname);
-                workSheet.Cells[row, "D"] = Encoding.UTF8.GetString(worker.fname);
-                workSheet.Cells[row, "L"] = Encoding.UTF8.GetString(worker.password);
+                workSheet.Cells[row, "B"] = worker.email;
+                workSheet.Cells[row, "C"] = worker.lname;
+                workSheet.Cells[row, "D"] = worker.fname;
+                workSheet.Cells[row, "L"] = worker.password;
             }
 
             for (int i = 1; i <= 13; i++)
@@ -71,6 +74,8 @@ namespace WorkerToExel
             string path = GetPath();
             if (path != null)
             {
+                //Я честно не знаю почему, но вот эта строчка должна реализовывать сохранение excel
+                //в кодировке utf-8.
                 excelApp.DefaultWebOptions.Encoding = MsoEncoding.msoEncodingUTF8;
                 workSheet.SaveAs(path, Excel.XlFileFormat.xlCSV);
             }
@@ -88,24 +93,77 @@ namespace WorkerToExel
 
         private void Add(object sender, RoutedEventArgs e)
         {
-            if (TextBoxLname.Text != "" && TextBoxFname.Text != ""
-                                        && TextBoxEmail.Text != "" && TextBoxPassword.Text != "")
+            if (!Validation.GetHasError(TextBoxLname) && !Validation.GetHasError(TextBoxFname) &&
+                !Validation.GetHasError(TextBoxEmail) && !Validation.GetHasError(TextBoxPassword))
             {
                 workers.Add(new Worker()
                 {
-                    email = Encoding.UTF8.GetBytes(TextBoxEmail.Text),
-                    lname = Encoding.UTF8.GetBytes(TextBoxLname.Text),
-                    fname = Encoding.UTF8.GetBytes(TextBoxFname.Text),
-                    password = Encoding.UTF8.GetBytes(TextBoxPassword.Text),
+                    email = TextBoxEmail.Text,
+                    lname = TextBoxLname.Text,
+                    fname = TextBoxFname.Text,
+                    password = TextBoxPassword.Text,
                 });
                 TextBoxLname.Text = "";
                 TextBoxFname.Text = "";
                 TextBoxEmail.Text = "";
                 TextBoxPassword.Text = "";
+                SelectWorker = new Worker();
             }
             else
             {
                 MessageBox.Show("Все поля должны быть заполнены.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void TextBoxEmail_Error(object sender, ValidationErrorEventArgs e)
+        {
+            if (Validation.GetHasError(sender as TextBox))
+            {
+                errorEmailText.Text = e.Error.ErrorContent.ToString();
+                errorEmailText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                errorEmailText.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void TextBoxLname_Error(object sender, ValidationErrorEventArgs e)
+        {
+            if (Validation.GetHasError(sender as TextBox))
+            {
+                errorLnameText.Text = e.Error.ErrorContent.ToString();
+                errorLnameText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                errorLnameText.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void TextBoxFname_Error(object sender, ValidationErrorEventArgs e)
+        {
+            if (Validation.GetHasError(sender as TextBox))
+            {
+                errorFnameText.Text = e.Error.ErrorContent.ToString();
+                errorFnameText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                errorFnameText.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void TextBoxPassword_Error(object sender, ValidationErrorEventArgs e)
+        {
+            if (Validation.GetHasError(sender as TextBox))
+            {
+                errorPasswordText.Text = e.Error.ErrorContent.ToString();
+                errorPasswordText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                errorPasswordText.Visibility = Visibility.Hidden;
             }
         }
     }
