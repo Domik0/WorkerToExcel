@@ -7,7 +7,7 @@
         xmlns:validations="clr-namespace:WorkerToExel.Validations"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Icon="logo_icon.ico"
         Title="WorkerToExcel" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary>
@@ -26,7 +26,6 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="20">
@@ -49,7 +48,7 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <TextBlock x:Name="errorEmailText" FontSize="16" FontWeight="Regular" Foreground="#FF0000"/>
+            <TextBlock x:Name="errorEmailText" FontSize="16" FontWeight="Regular" Foreground="#FF0000" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Margin="20">
