@@ -72,6 +72,7 @@
     </ApplicationDefinition>
     <Compile Include="Validations\EmailRule.cs" />
     <Compile Include="Validations\FieldRule.cs" />
+    <Compile Include="Validations\FielldAndRusRule.cs" />
     <Compile Include="Worker.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

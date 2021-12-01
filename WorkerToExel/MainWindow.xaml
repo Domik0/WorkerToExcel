@@ -7,8 +7,11 @@
         xmlns:validations="clr-namespace:WorkerToExel.Validations"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        mc:Ignorable="d" Icon="logo_icon.ico"
-        Title="WorkerToExcel" Height="450" Width="800">
+        mc:Ignorable="d"
+        Icon="logo_icon.ico"
+        Title="WorkerToExcel"
+        Height="450"
+        Width="800">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,17 +31,26 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="20">
+        <StackPanel Grid.Row="0" Grid.Column="0"
+                    Margin="20">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Email" FontSize="20" VerticalAlignment="Bottom" Margin="0,0,20,0"
+                <TextBlock Text="Email"
+                           FontSize="20"
+                           VerticalAlignment="Bottom"
+                           Margin="0,0,20,0"
                            Width="100"/>
-                <TextBox x:Name="TextBoxEmail" Width="350" VerticalContentAlignment="Bottom" FontSize="25"
+                <TextBox x:Name="TextBoxEmail"
+                         Width="350"
+                         VerticalContentAlignment="Bottom"
+                         FontSize="25"
                          Validation.Error="TextBoxEmail_Error">
                     <Validation.ErrorTemplate>
                         <ControlTemplate></ControlTemplate>
                     </Validation.ErrorTemplate>
                     <TextBox.Text>
-                        <Binding Path="email" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged"
+                        <Binding Path="Email"
+                                 ValidatesOnExceptions="True"
+                                 UpdateSourceTrigger="PropertyChanged"
                                  NotifyOnValidationError="True">
                             <Binding.ValidationRules>
                                 <validations:EmailRule></validations:EmailRule>
@@ -48,20 +60,32 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <TextBlock x:Name="errorEmailText" FontSize="16" FontWeight="Regular" Foreground="#FF0000" />
+            <TextBlock x:Name="errorEmailText"
+                       FontSize="16"
+                       FontWeight="Regular"
+                       Foreground="#FF0000" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="20">
+        <StackPanel Grid.Row="1" Grid.Column="0"
+                    Margin="20">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Фамилия" FontSize="20" VerticalAlignment="Bottom" Margin="0,0,20,0"
+                <TextBlock Text="Фамилия"
+                           FontSize="20"
+                           VerticalAlignment="Bottom"
+                           Margin="0,0,20,0"
                            Width="100"/>
-                <TextBox x:Name="TextBoxLname" Width="350" VerticalContentAlignment="Bottom" FontSize="25"
-                         Validation.Error="TextBoxLname_Error">
+                <TextBox x:Name="TextBoxLastName"
+                         Width="350"
+                         VerticalContentAlignment="Bottom"
+                         FontSize="25"
+                         Validation.Error="TextBoxLastName_Error">
                     <Validation.ErrorTemplate>
                         <ControlTemplate></ControlTemplate>
                     </Validation.ErrorTemplate>
                     <TextBox.Text>
-                        <Binding Path="lname" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged"
+                        <Binding Path="LastName"
+                                 ValidatesOnExceptions="True"
+                                 UpdateSourceTrigger="PropertyChanged"
                                  NotifyOnValidationError="True">
                             <Binding.ValidationRules>
                                 <validations:FieldRule></validations:FieldRule>
@@ -71,20 +95,32 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <TextBlock x:Name="errorLnameText" FontSize="16" FontWeight="Regular" Foreground="#FF0000"/>
+            <TextBlock x:Name="errorLnameText"
+                       FontSize="16"
+                       FontWeight="Regular"
+                       Foreground="#FF0000"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Margin="20">
+        <StackPanel Grid.Row="2" Grid.Column="0"
+                    Margin="20">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Имя" FontSize="20" VerticalAlignment="Bottom" Margin="0,0,20,0"
+                <TextBlock Text="Имя"
+                           FontSize="20"
+                           VerticalAlignment="Bottom"
+                           Margin="0,0,20,0"
                            Width="100" />
-                <TextBox x:Name="TextBoxFname" Width="350" VerticalContentAlignment="Bottom" FontSize="25"
-                         Validation.Error="TextBoxFname_Error">
+                <TextBox x:Name="TextBoxFirstName"
+                         Width="350"
+                         VerticalContentAlignment="Bottom"
+                         FontSize="25"
+                         Validation.Error="TextBoxFirstName_Error">
                     <Validation.ErrorTemplate>
                         <ControlTemplate></ControlTemplate>
                     </Validation.ErrorTemplate>
                     <TextBox.Text>
-                        <Binding Path="fname" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged"
+                        <Binding Path="FirstName"
+                                 ValidatesOnExceptions="True"
+                                 UpdateSourceTrigger="PropertyChanged"
                                  NotifyOnValidationError="True">
                             <Binding.ValidationRules>
                                 <validations:FieldRule></validations:FieldRule>
@@ -94,20 +130,32 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <TextBlock x:Name="errorFnameText" FontSize="16" FontWeight="Regular" Foreground="#FF0000"/>
+            <TextBlock x:Name="errorFnameText"
+                       FontSize="16"
+                       FontWeight="Regular"
+                       Foreground="#FF0000"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Margin="20">
+        <StackPanel Grid.Row="3" Grid.Column="0"
+                    Margin="20">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Пароль" FontSize="20" VerticalAlignment="Bottom" Margin="0,0,20,0"
+                <TextBlock Text="Пароль"
+                           FontSize="20"
+                           VerticalAlignment="Bottom"
+                           Margin="0,0,20,0"
                            Width="100"/>
-                <TextBox x:Name="TextBoxPassword" Width="350" VerticalContentAlignment="Bottom" FontSize="25"
+                <TextBox x:Name="TextBoxPassword"
+                         Width="350"
+                         VerticalContentAlignment="Bottom"
+                         FontSize="25"
                          Validation.Error="TextBoxPassword_Error">
                     <Validation.ErrorTemplate>
                         <ControlTemplate></ControlTemplate>
                     </Validation.ErrorTemplate>
                     <TextBox.Text>
-                        <Binding Path="password" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged"
+                        <Binding Path="Password"
+                                 ValidatesOnExceptions="True"
+                                 UpdateSourceTrigger="PropertyChanged"
                                  NotifyOnValidationError="True">
                             <Binding.ValidationRules>
                                 <validations:FieldRule></validations:FieldRule>
@@ -120,8 +168,20 @@
             <TextBlock x:Name="errorPasswordText" FontSize="16" FontWeight="Regular" Foreground="#FF0000"/>
         </StackPanel>
 
-        <Button Grid.Row="0" Grid.Column="1" Width="200" Height="50" Content="Show worker list" FontSize="20" Click="Show"/>
-        <Button Grid.Row="1" Grid.Column="1" Width="200" Height="50" Content="Add worker in list" FontSize="20" Click="Add"/>
-        <Button Grid.Row="2" Grid.Column="1" Width="200" Height="50" Content="Save in Excel" FontSize="20" Click="Save"/>
+        <Button Grid.Row="0" Grid.Column="1"
+                Width="200" Height="50"
+                Content="Show worker list"
+                FontSize="20"
+                Click="Show"/>
+        <Button Grid.Row="1" Grid.Column="1"
+                Width="200" Height="50"
+                Content="Add worker in list"
+                FontSize="20"
+                Click="Add"/>
+        <Button Grid.Row="2" Grid.Column="1"
+                Width="200" Height="50"
+                Content="Save in Excel (CSV)"
+                FontSize="20"
+                Click="Save"/>
     </Grid>
 </Window>

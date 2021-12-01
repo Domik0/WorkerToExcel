@@ -1,19 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Office.Core;
 using Microsoft.Win32;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -26,16 +14,19 @@ namespace WorkerToExel
     public partial class MainWindow : Window
     {
         private List<Worker> workers = new List<Worker>();
-        public Worker SelectWorker = new Worker();
+        public Worker selectWorker = new Worker();
         Excel.Application excelApp;
         Excel._Worksheet workSheet;
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = SelectWorker;
+            DataContext = selectWorker;
         }
 
+        /// <summary>
+        /// Save data in Excel(File format CSV(UTF-8))
+        /// </summary>
         private void Save(object sender, RoutedEventArgs e)
         {
             CreateExcel();
@@ -44,45 +35,75 @@ namespace WorkerToExel
             string path = GetPath();
             if (path != null)
             {
-                //Я честно не знаю почему, но вот эта строчка должна реализовывать сохранение excel
-                //в кодировке utf-8.
+                //Я честно не знаю почему не работает, но вот эта строчка должна устанавливать дефолтную кодировку utf-8.
                 excelApp.DefaultWebOptions.Encoding = MsoEncoding.msoEncodingUTF8;
-                workSheet.SaveAs(path, Excel.XlFileFormat.xlCSV);
+                try
+                {
+                    workSheet.SaveAs(path, Excel.XlFileFormat.xlCSV);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message,
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    throw;
+                }
             }
         }
 
-        void CreateExcel()
+        /// <summary>
+        /// Create Excel file and add header
+        /// </summary>
+        private void CreateExcel()
         {
             excelApp = new Excel.Application();
             excelApp.Visible = true;
             excelApp.Workbooks.Add();
             workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
-
-            workSheet.Cells[1, "A"] = "id";
-            workSheet.Cells[1, "B"] = "email";
-            workSheet.Cells[1, "C"] = "lname";
-            workSheet.Cells[1, "D"] = "fname";
-            workSheet.Cells[1, "E"] = "mname";
-            workSheet.Cells[1, "F"] = "gender";
-            workSheet.Cells[1, "G"] = "city";
-            workSheet.Cells[1, "H"] = "phone";
-            workSheet.Cells[1, "I"] = "position";
-            workSheet.Cells[1, "J"] = "manager_";
-            workSheet.Cells[1, "K"] = "login";
-            workSheet.Cells[1, "L"] = "password";
-            workSheet.Cells[1, "M"] = "my_field";
+            CreateHeader();
         }
 
+        /// <summary>
+        /// Create header naming for database
+        /// </summary>
+        void CreateHeader()
+        {
+            int numberColumnHeader = 1;
+            SetDataOnCell(numberColumnHeader, "A", "id");
+            SetDataOnCell(numberColumnHeader, "B", "email");
+            SetDataOnCell(numberColumnHeader, "C", "lname");
+            SetDataOnCell(numberColumnHeader, "D", "fname");
+            SetDataOnCell(numberColumnHeader, "E", "mname");
+            SetDataOnCell(numberColumnHeader, "F", "gender");
+            SetDataOnCell(numberColumnHeader, "G", "city");
+            SetDataOnCell(numberColumnHeader, "H", "phone");
+            SetDataOnCell(numberColumnHeader, "I", "position");
+            SetDataOnCell(numberColumnHeader, "J", "manager_");
+            SetDataOnCell(numberColumnHeader, "K", "login");
+            SetDataOnCell(numberColumnHeader, "L", "password");
+            SetDataOnCell(numberColumnHeader, "M", "my_field");
+        }
+
+        /// <summary>
+        /// Method for adding data
+        /// </summary>
+        /// <param name="row">Number row</param>
+        /// <param name="column">In Latin, like columns in Excel</param>
+        /// <param name="data">Input string data</param>
+        void SetDataOnCell(int row, string column, string data) => workSheet.Cells[row, column] = data;
+
+        /// <summary>
+        /// Entering all workers from the list in Excel
+        /// </summary>
         void AddData()
         {
-            var row = 1;
+            int row = 1;
             foreach (var worker in workers)
             {
                 row++;
-                workSheet.Cells[row, "B"] = worker.email;
-                workSheet.Cells[row, "C"] = worker.lname;
-                workSheet.Cells[row, "D"] = worker.fname;
-                workSheet.Cells[row, "L"] = worker.password;
+                SetDataOnCell(row, "B", worker.Email);
+                SetDataOnCell(row, "C", worker.LastName);
+                SetDataOnCell(row, "D", worker.FirstName);
+                SetDataOnCell(row, "L", worker.Password);
             }
 
             for (int i = 1; i <= 13; i++)
@@ -92,6 +113,10 @@ namespace WorkerToExel
             }
         }
 
+        /// <summary>
+        /// Method for getting the name and path of saving the file
+        /// </summary>
+        /// <returns>File save path</returns>
         string GetPath()
         {
             SaveFileDialog dialog = new SaveFileDialog();
@@ -102,22 +127,22 @@ namespace WorkerToExel
             return null;
         }
 
+        /// <summary>
+        /// Method for adding entered data to List<Worker>
+        /// </summary>
         private void Add(object sender, RoutedEventArgs e)
         {
             if (ChekValidation() && ChekNull())
             {
                 workers.Add(new Worker()
                 {
-                    email = TextBoxEmail.Text,
-                    lname = TextBoxLname.Text,
-                    fname = TextBoxFname.Text,
-                    password = TextBoxPassword.Text,
+                    Email = selectWorker.Email,
+                    LastName = selectWorker.LastName,
+                    FirstName = selectWorker.FirstName,
+                    Password = selectWorker.Password,
                 });
-                TextBoxLname.Text = "";
-                TextBoxFname.Text = "";
-                TextBoxEmail.Text = "";
-                TextBoxPassword.Text = "";
-                SelectWorker = new Worker();
+                ClearTextBox();
+                selectWorker = new Worker();
             }
             else
             {
@@ -126,18 +151,38 @@ namespace WorkerToExel
             }
         }
 
+        /// <summary>
+        /// Clearing the entered data
+        /// </summary>
+        private void ClearTextBox()
+        {
+            TextBoxLastName.Text = "";
+            TextBoxFirstName.Text = "";
+            TextBoxEmail.Text = "";
+            TextBoxPassword.Text = "";
+        }
+
+        /// <summary>
+        /// Data validation check
+        /// </summary>
         bool ChekValidation()
         {
-            return !Validation.GetHasError(TextBoxLname) && !Validation.GetHasError(TextBoxFname) &&
+            return !Validation.GetHasError(TextBoxLastName) && !Validation.GetHasError(TextBoxFirstName) &&
                    !Validation.GetHasError(TextBoxEmail) && !Validation.GetHasError(TextBoxPassword);
         }
 
+        /// <summary>
+        /// Checking for the absence of empty fields
+        /// </summary>
         bool ChekNull()
         {
-            return TextBoxLname.Text != "" && TextBoxFname.Text != "" &&
+            return TextBoxLastName.Text != "" && TextBoxFirstName.Text != "" &&
                    TextBoxEmail.Text != "" && TextBoxPassword.Text != "";
         }
 
+        /// <summary>
+        /// Show List<Worker> in Excel
+        /// </summary>
         private void Show(object sender, RoutedEventArgs e)
         {
             CreateExcel();
@@ -157,7 +202,7 @@ namespace WorkerToExel
             }
         }
 
-        private void TextBoxLname_Error(object sender, ValidationErrorEventArgs e)
+        private void TextBoxLastName_Error(object sender, ValidationErrorEventArgs e)
         {
             if (Validation.GetHasError(sender as TextBox))
             {
@@ -170,7 +215,7 @@ namespace WorkerToExel
             }
         }
 
-        private void TextBoxFname_Error(object sender, ValidationErrorEventArgs e)
+        private void TextBoxFirstName_Error(object sender, ValidationErrorEventArgs e)
         {
             if (Validation.GetHasError(sender as TextBox))
             {
