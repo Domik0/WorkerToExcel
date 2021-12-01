@@ -121,7 +121,8 @@
             <TextBlock x:Name="errorPasswordText" FontSize="16" FontWeight="Regular" Foreground="#FF0000"/>
         </StackPanel>
 
+        <Button Grid.Row="0" Grid.Column="1" Width="200" Height="50" Content="Show worker list" FontSize="20" Click="Show"/>
         <Button Grid.Row="1" Grid.Column="1" Width="200" Height="50" Content="Add worker in list" FontSize="20" Click="Add"/>
-        <Button Grid.Row="2" Grid.Column="1" Width="200" Height="50" Content="Save in Exel" FontSize="20" Click="Save"/>
+        <Button Grid.Row="2" Grid.Column="1" Width="200" Height="50" Content="Save in Excel" FontSize="20" Click="Save"/>
     </Grid>
 </Window>

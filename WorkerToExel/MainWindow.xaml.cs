@@ -27,6 +27,8 @@ namespace WorkerToExel
     {
         private List<Worker> workers = new List<Worker>();
         public Worker SelectWorker = new Worker();
+        Excel.Application excelApp;
+        Excel._Worksheet workSheet;
 
         public MainWindow()
         {
@@ -36,10 +38,25 @@ namespace WorkerToExel
 
         private void Save(object sender, RoutedEventArgs e)
         {
-            var excelApp = new Excel.Application();
+            CreateExcel();
+            AddData();
+            
+            string path = GetPath();
+            if (path != null)
+            {
+                //Я честно не знаю почему, но вот эта строчка должна реализовывать сохранение excel
+                //в кодировке utf-8.
+                excelApp.DefaultWebOptions.Encoding = MsoEncoding.msoEncodingUTF8;
+                workSheet.SaveAs(path, Excel.XlFileFormat.xlCSV);
+            }
+        }
+
+        void CreateExcel()
+        {
+            excelApp = new Excel.Application();
             excelApp.Visible = true;
             excelApp.Workbooks.Add();
-            Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+            workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
 
             workSheet.Cells[1, "A"] = "id";
             workSheet.Cells[1, "B"] = "email";
@@ -54,7 +71,10 @@ namespace WorkerToExel
             workSheet.Cells[1, "K"] = "login";
             workSheet.Cells[1, "L"] = "password";
             workSheet.Cells[1, "M"] = "my_field";
+        }
 
+        void AddData()
+        {
             var row = 1;
             foreach (var worker in workers)
             {
@@ -70,18 +90,9 @@ namespace WorkerToExel
                 workSheet.Columns[i].AutoFit();
                 ((Excel.Range)workSheet.Columns[i]).AutoFit();
             }
-            
-            string path = GetPath();
-            if (path != null)
-            {
-                //Я честно не знаю почему, но вот эта строчка должна реализовывать сохранение excel
-                //в кодировке utf-8.
-                excelApp.DefaultWebOptions.Encoding = MsoEncoding.msoEncodingUTF8;
-                workSheet.SaveAs(path, Excel.XlFileFormat.xlCSV);
-            }
         }
 
-        public string GetPath()
+        string GetPath()
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "CSV Files(*.csv)|*.csv|All(*.*)|*";
@@ -93,8 +104,7 @@ namespace WorkerToExel
 
         private void Add(object sender, RoutedEventArgs e)
         {
-            if (!Validation.GetHasError(TextBoxLname) && !Validation.GetHasError(TextBoxFname) &&
-                !Validation.GetHasError(TextBoxEmail) && !Validation.GetHasError(TextBoxPassword))
+            if (ChekValidation() && ChekNull())
             {
                 workers.Add(new Worker()
                 {
@@ -111,8 +121,27 @@ namespace WorkerToExel
             }
             else
             {
-                MessageBox.Show("Все поля должны быть заполнены.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Поля должны быть заполнены кореектными данные и не должны быть пусты.",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        bool ChekValidation()
+        {
+            return !Validation.GetHasError(TextBoxLname) && !Validation.GetHasError(TextBoxFname) &&
+                   !Validation.GetHasError(TextBoxEmail) && !Validation.GetHasError(TextBoxPassword);
+        }
+
+        bool ChekNull()
+        {
+            return TextBoxLname.Text != "" && TextBoxFname.Text != "" &&
+                   TextBoxEmail.Text != "" && TextBoxPassword.Text != "";
+        }
+
+        private void Show(object sender, RoutedEventArgs e)
+        {
+            CreateExcel();
+            AddData();
         }
 
         private void TextBoxEmail_Error(object sender, ValidationErrorEventArgs e)
