@@ -52,16 +52,16 @@ namespace WorkerToExel
                 }
             }
 
-            string data;
-            using (StreamReader sr = new StreamReader(path))
-            {
-                data = sr.ReadToEnd();
-            }
+            //string data;
+            //using (StreamReader sr = new StreamReader(path))
+            //{
+            //    data = sr.ReadToEnd();
+            //}
 
-            using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
-            {
-                sw.WriteLine(data);
-            }
+            //using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
+            //{
+            //    sw.WriteLine(data);
+            //}
             //File.Replace(path, new StreamWriter(path, false, Encoding.GetEncoding(WIN_1252_CP)));
         }
 
