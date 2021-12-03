@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Office.Core;
@@ -13,6 +15,7 @@ namespace WorkerToExel
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const int WIN_1252_CP = 1252; // Windows ANSI codepage 1252
         private List<Worker> workers = new List<Worker>();
         public Worker selectWorker = new Worker();
         Excel.Application excelApp;
@@ -48,6 +51,18 @@ namespace WorkerToExel
                     throw;
                 }
             }
+
+            string data;
+            using (StreamReader sr = new StreamReader(path))
+            {
+                data = sr.ReadToEnd();
+            }
+
+            using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
+            {
+                sw.WriteLine(data);
+            }
+            //File.Replace(path, new StreamWriter(path, false, Encoding.GetEncoding(WIN_1252_CP)));
         }
 
         /// <summary>
