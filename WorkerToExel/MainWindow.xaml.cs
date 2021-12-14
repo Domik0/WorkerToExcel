@@ -32,9 +32,11 @@ namespace WorkerToExel
         /// </summary>
         private void Save(object sender, RoutedEventArgs e)
         {
+            if(excelApp != null)
+                CloseExcel();
             CreateExcel();
             AddData();
-            
+
             string path = GetPath();
             if (path != null)
             {
@@ -48,21 +50,42 @@ namespace WorkerToExel
                 {
                     MessageBox.Show(exception.Message,
                         "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                    throw;
                 }
             }
 
-            //string data;
-            //using (StreamReader sr = new StreamReader(path))
-            //{
-            //    data = sr.ReadToEnd();
-            //}
+            CloseExcel();
 
-            //using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
-            //{
-            //    sw.WriteLine(data);
-            //}
+            //string path = "C:\\Users\\dafed\\Desktop\\123.csv";
+            string data;
+            if(!string.IsNullOrEmpty(path))
+            {
+                using (StreamReader sr = new StreamReader(path, Encoding.UTF8))
+                {
+                    data = sr.ReadToEnd();
+                }
+
+                using (StreamWriter sw = new StreamWriter(path, true, Encoding.UTF8))
+                {
+                    sw.Write("");
+                }
+
+                using (StreamReader sr = new StreamReader(path, Encoding.UTF8))
+                {
+                    data = sr.ReadToEnd();
+                }
+            }
             //File.Replace(path, new StreamWriter(path, false, Encoding.GetEncoding(WIN_1252_CP)));
+        }
+
+        /// <summary>
+        /// Close excel file.
+        /// </summary>
+        private void CloseExcel()
+        {
+            excelApp.Workbooks.Close();
+            excelApp.Quit();
+            workSheet = null;
+            excelApp = null;
         }
 
         /// <summary>
@@ -111,20 +134,23 @@ namespace WorkerToExel
         /// </summary>
         void AddData()
         {
-            int row = 1;
-            foreach (var worker in workers)
+            if(workers.Count != 0)
             {
-                row++;
-                SetDataOnCell(row, "B", worker.Email);
-                SetDataOnCell(row, "C", worker.LastName);
-                SetDataOnCell(row, "D", worker.FirstName);
-                SetDataOnCell(row, "L", worker.Password);
-            }
+                int row = 1;
+                foreach (var worker in workers)
+                {
+                    row++;
+                    SetDataOnCell(row, "B", worker.Email);
+                    SetDataOnCell(row, "C", worker.LastName);
+                    SetDataOnCell(row, "D", worker.FirstName);
+                    SetDataOnCell(row, "L", worker.Password);
+                }
 
-            for (int i = 1; i <= 13; i++)
-            {
-                workSheet.Columns[i].AutoFit();
-                ((Excel.Range)workSheet.Columns[i]).AutoFit();
+                for (int i = 1; i <= 13; i++)
+                {
+                    workSheet.Columns[i].AutoFit();
+                    ((Excel.Range) workSheet.Columns[i]).AutoFit();
+                }
             }
         }
 
